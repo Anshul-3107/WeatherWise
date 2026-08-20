@@ -1,0 +1,115 @@
+# =========================
+# Flutter / Dart
+# =========================
+
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+coverage/
+
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# Flutter generated files
+*.iml
+*.ipr
+*.iws
+
+# Android
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Symbolication
+app.*.symbols
+app.*.map.json
+
+
+# =========================
+# Android Studio / IntelliJ
+# =========================
+
+.idea/
+*.iml
+
+
+# =========================
+# VS Code
+# =========================
+
+# Uncomment if you don't want VS Code settings uploaded
+# .vscode/
+
+
+# =========================
+# Python / Django
+# =========================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Django local settings
+local_settings.py
+
+
+# =========================
+# Environment / Secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+
+# =========================
+# OS / Miscellaneous
+# =========================
+
+.DS_Store
+*.swp
+*.swo
+.history/
+.svn/
+.atom/
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# =========================
+# Django Backend
+# =========================
+
+backend/venv/
+backend/db.sqlite3
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Django local files
+*.log
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
