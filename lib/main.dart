@@ -7,6 +7,7 @@ import 'package:weatherwise/screens/profile/profile_selection_screen.dart';
 import 'package:weatherwise/services/storage_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: WeatherWiseApp()));
 }
 
