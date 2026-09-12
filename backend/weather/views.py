@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -55,14 +56,35 @@ def get_current_weather(request):
     except Exception:
         raw_aqi_data = None
 
-    weather_record = save_weather_record(city_name, latitude, longitude, raw_weather_data)
-    weather_serialized = WeatherRecordSerializer(weather_record).data
+    try:
+        weather_record = save_weather_record(city_name, latitude, longitude, raw_weather_data)
+        response_data = dict(WeatherRecordSerializer(weather_record).data)
+    except Exception:
+        current = raw_weather_data.get("current", {})
+        daily = raw_weather_data.get("daily", {})
+        response_data = {
+            "city_name": city_name,
+            "latitude": float(latitude),
+            "longitude": float(longitude),
+            "temperature_2m": current.get("temperature_2m", 0.0),
+            "relative_humidity_2m": current.get("relative_humidity_2m", 0.0),
+            "apparent_temperature": current.get("apparent_temperature", 0.0),
+            "wind_speed_10m": current.get("wind_speed_10m", 0.0),
+            "wind_direction_10m": current.get("wind_direction_10m", 0.0),
+            "weather_code": current.get("weather_code", 0),
+            "is_day": bool(current.get("is_day", True)),
+            "sunrise": daily.get("sunrise", [None])[0],
+            "sunset": daily.get("sunset", [None])[0],
+            "moonrise": raw_weather_data.get("moonrise"),
+            "moonset": raw_weather_data.get("moonset"),
+            "moon_phase": raw_weather_data.get("moon_phase"),
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+        }
 
     alerts = []
     if raw_aqi_data is not None:
         alerts = generate_alerts_from_weather(raw_weather_data, raw_aqi_data)
 
-    response_data = dict(weather_serialized)
     response_data['alerts'] = alerts
 
     return Response(response_data, status=status.HTTP_200_OK)
@@ -160,9 +182,22 @@ def get_air_quality(request):
             status=status.HTTP_502_BAD_GATEWAY,
         )
 
-    record = save_air_quality_record(city_name, latitude, longitude, raw_data)
-    serializer = AirQualityRecordSerializer(record)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    try:
+        record = save_air_quality_record(city_name, latitude, longitude, raw_data)
+        serializer = AirQualityRecordSerializer(record)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception:
+        curr = raw_data.get("current", {})
+        fallback_data = {
+            "city_name": city_name,
+            "latitude": float(latitude),
+            "longitude": float(longitude),
+            "us_aqi": curr.get("us_aqi", 0),
+            "pm2_5": curr.get("pm2_5", 0.0),
+            "pm10": curr.get("pm10", 0.0),
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+        }
+        return Response(fallback_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
