@@ -34,14 +34,14 @@ class WeatherService {
     defaultValue: 'http://10.0.2.2:8000/api/weather',
   );
 
+  static const Duration _timeout = Duration(seconds: 40);
+
   Future<GeocodeResult> searchCity(String cityName) async {
     final uri = Uri.parse(
       '$_baseUrl/search/?city=${Uri.encodeComponent(cityName)}',
     );
 
-    final response = await http.get(uri).timeout(
-      const Duration(seconds: 10),
-    );
+    final response = await http.get(uri).timeout(_timeout);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -58,9 +58,7 @@ class WeatherService {
       '$_baseUrl/reverse-geocode/?lat=$latitude&lon=$longitude',
     );
 
-    final response = await http.get(uri).timeout(
-      const Duration(seconds: 10),
-    );
+    final response = await http.get(uri).timeout(_timeout);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -81,9 +79,7 @@ class WeatherService {
       '$_baseUrl/current/?city=${Uri.encodeComponent(cityName)}&lat=$latitude&lon=$longitude',
     );
 
-    final response = await http.get(uri).timeout(
-      const Duration(seconds: 10),
-    );
+    final response = await http.get(uri).timeout(_timeout);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -102,9 +98,7 @@ class WeatherService {
       '$_baseUrl/air-quality/?city=${Uri.encodeComponent(cityName)}&lat=$latitude&lon=$longitude',
     );
 
-    final response = await http.get(uri).timeout(
-      const Duration(seconds: 10),
-    );
+    final response = await http.get(uri).timeout(_timeout);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -122,9 +116,7 @@ class WeatherService {
       '$_baseUrl/predict/?lat=$latitude&lon=$longitude',
     );
 
-    final response = await http.get(uri).timeout(
-      const Duration(seconds: 15),
-    );
+    final response = await http.get(uri).timeout(_timeout);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -144,9 +136,7 @@ class WeatherService {
       '$_baseUrl/advice/?lat=$latitude&lon=$longitude&profiles=${Uri.encodeComponent(profilesParam)}',
     );
 
-    final response = await http.get(uri).timeout(
-      const Duration(seconds: 10),
-    );
+    final response = await http.get(uri).timeout(_timeout);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);

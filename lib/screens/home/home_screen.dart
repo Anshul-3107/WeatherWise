@@ -129,34 +129,37 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final results = await Future.wait([
-        _weatherService.fetchCurrentWeather(
-          cityName: _cityName,
-          latitude: _latitude,
-          longitude: _longitude,
-        ),
-        _weatherService.fetchAirQuality(
-          cityName: _cityName,
-          latitude: _latitude,
-          longitude: _longitude,
-        ),
-        _weatherService.fetchPrediction(
-          latitude: _latitude,
-          longitude: _longitude,
-        ),
-        _weatherService.fetchPersonalizedAdvice(
-          latitude: _latitude,
-          longitude: _longitude,
-          selectedProfiles: _selectedProfiles,
-        ),
-      ]);
+      final weather = await _weatherService.fetchCurrentWeather(
+        cityName: _cityName,
+        latitude: _latitude,
+        longitude: _longitude,
+      );
+
+      final aqiFuture = _weatherService.fetchAirQuality(
+        cityName: _cityName,
+        latitude: _latitude,
+        longitude: _longitude,
+      ).then<AirQualityModel?>((v) => v).catchError((_) => null);
+
+      final predFuture = _weatherService.fetchPrediction(
+        latitude: _latitude,
+        longitude: _longitude,
+      ).then<PredictionModel?>((v) => v).catchError((_) => null);
+
+      final advFuture = _weatherService.fetchPersonalizedAdvice(
+        latitude: _latitude,
+        longitude: _longitude,
+        selectedProfiles: _selectedProfiles,
+      ).then<List<AdviceModel>>((v) => v).catchError((_) => <AdviceModel>[]);
+
+      final extras = await Future.wait([aqiFuture, predFuture, advFuture]);
 
       if (!mounted) return;
       setState(() {
-        _weather = results[0] as WeatherModel;
-        _airQuality = results[1] as AirQualityModel;
-        _prediction = results[2] as PredictionModel;
-        _advice = results[3] as List<AdviceModel>;
+        _weather = weather;
+        _airQuality = extras[0] as AirQualityModel?;
+        _prediction = extras[1] as PredictionModel?;
+        _advice = extras[2] as List<AdviceModel>;
         _isLoading = false;
       });
     } catch (e) {
