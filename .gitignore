@@ -101,6 +101,7 @@ local_settings.py
 
 backend/venv/
 backend/db.sqlite3
+backend/staticfiles/
 
 # Python cache
 __pycache__/
@@ -113,6 +114,3 @@ __pycache__/
 .env
 .env.*
 !.env.example
-
-# ML Models
-*.joblib

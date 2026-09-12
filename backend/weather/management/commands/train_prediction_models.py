@@ -108,8 +108,8 @@ class Command(BaseCommand):
         self.stdout.write(f"  Temperature model MAE: {mae:.2f}°C")
 
         MODELS_DIR.mkdir(exist_ok=True)
-        joblib.dump(model, MODELS_DIR / "temperature_model.joblib")
-        self.stdout.write("  Saved: temperature_model.joblib")
+        joblib.dump(model, MODELS_DIR / "temperature_model.joblib", compress=3)
+        self.stdout.write("  Saved: temperature_model.joblib (compressed)")
 
     def _train_rain_model(self, data):
         self.stdout.write("\nTraining rain classification model...")
@@ -129,5 +129,5 @@ class Command(BaseCommand):
         self.stdout.write(f"  Rain model accuracy: {accuracy:.2%}")
 
         MODELS_DIR.mkdir(exist_ok=True)
-        joblib.dump(model, MODELS_DIR / "rain_model.joblib")
-        self.stdout.write("  Saved: rain_model.joblib")
+        joblib.dump(model, MODELS_DIR / "rain_model.joblib", compress=3)
+        self.stdout.write("  Saved: rain_model.joblib (compressed)")
