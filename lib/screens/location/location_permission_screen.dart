@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weatherwise/screens/home/home_screen.dart';
 import 'package:weatherwise/services/storage_service.dart';
+import 'package:weatherwise/services/weather_services.dart';
 
 class LocationPermissionScreen extends StatefulWidget {
   const LocationPermissionScreen({super.key});
@@ -51,8 +52,21 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen> {
         ),
       );
 
+      String resolvedCity = 'Current Location';
+      try {
+        final geocodeResult = await WeatherService().reverseGeocode(
+          position.latitude,
+          position.longitude,
+        );
+        if (geocodeResult.name.isNotEmpty) {
+          resolvedCity = geocodeResult.name;
+        }
+      } catch (_) {
+        // Fallback to 'Current Location'; home screen will resolve from weather response
+      }
+
       await _storageService.saveSelectedCity(
-        cityName: 'Current Location',
+        cityName: resolvedCity,
         latitude: position.latitude,
         longitude: position.longitude,
       );

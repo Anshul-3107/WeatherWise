@@ -111,6 +111,7 @@ def fetch_weather_from_open_meteo(latitude: float, longitude: float) -> dict:
     sunset_iso = datetime.fromtimestamp(sunset_ts, tz=timezone.utc).isoformat()
 
     return {
+        "city_name": data.get("name", ""),
         "current": {
             "temperature_2m": temp,
             "relative_humidity_2m": humidity,
@@ -222,7 +223,7 @@ def reverse_geocode(latitude: float, longitude: float) -> dict:
     """
     Resolves latitude/longitude to a city name using OpenWeatherMap's Reverse Geocoding API.
     """
-    url = "http://api.openweathermap.org/geo/1.0/reverse"
+    url = "https://api.openweathermap.org/geo/1.0/reverse"
     params = {
         "lat": latitude,
         "lon": longitude,

@@ -54,6 +54,23 @@ class _HomeScreenState extends State<HomeScreen> {
       _cityName = savedCity['cityName'] as String;
       _latitude = savedCity['latitude'] as double;
       _longitude = savedCity['longitude'] as double;
+
+      // If saved city is generic 'Current Location', attempt reverse geocoding
+      if (_cityName.toLowerCase() == 'current location' || _cityName.trim().isEmpty) {
+        _weatherService.reverseGeocode(_latitude, _longitude).then((geo) {
+          if (mounted && geo.name.isNotEmpty) {
+            setState(() {
+              _cityName = geo.name;
+            });
+            _storageService.saveSelectedCity(
+              cityName: geo.name,
+              latitude: _latitude,
+              longitude: _longitude,
+            );
+          }
+        }).catchError((_) {});
+      }
+
       await _loadData();
     } else {
       await _getCurrentLocation();
@@ -135,8 +152,22 @@ class _HomeScreenState extends State<HomeScreen> {
         longitude: _longitude,
       );
 
+      // If cityName is still 'Current Location', adopt the resolved city from weather data
+      String updatedCityName = _cityName;
+      if ((_cityName.toLowerCase() == 'current location' || _cityName.trim().isEmpty) &&
+          weather.cityName.isNotEmpty &&
+          weather.cityName.toLowerCase() != 'current location') {
+        updatedCityName = weather.cityName;
+        _cityName = updatedCityName;
+        await _storageService.saveSelectedCity(
+          cityName: updatedCityName,
+          latitude: _latitude,
+          longitude: _longitude,
+        );
+      }
+
       final aqiFuture = _weatherService.fetchAirQuality(
-        cityName: _cityName,
+        cityName: updatedCityName,
         latitude: _latitude,
         longitude: _longitude,
       ).then<AirQualityModel?>((v) => v).catchError((_) => null);
@@ -156,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (!mounted) return;
       setState(() {
+        _cityName = updatedCityName;
         _weather = weather;
         _airQuality = extras[0] as AirQualityModel?;
         _prediction = extras[1] as PredictionModel?;
@@ -324,17 +356,32 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
-            const Icon(Icons.location_on, size: 18, color: Colors.white70),
+            InkWell(
+              onTap: _getCurrentLocation,
+              borderRadius: BorderRadius.circular(20),
+              child: const Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Icon(Icons.location_on, size: 20, color: Colors.white70),
+              ),
+            ),
             const SizedBox(width: 4),
             Expanded(
-              child: Text(
-                _cityName,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                overflow: TextOverflow.ellipsis,
+              child: GestureDetector(
+                onTap: _getCurrentLocation,
+                child: Text(
+                  _cityName,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.my_location, color: Colors.white),
+              onPressed: _getCurrentLocation,
+              tooltip: 'Current GPS Location',
             ),
             IconButton(
               icon: const Icon(Icons.search, color: Colors.white),

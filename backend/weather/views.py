@@ -56,6 +56,20 @@ def get_current_weather(request):
     except Exception:
         raw_aqi_data = None
 
+    # Resolve real city name if client passed generic placeholder
+    if not city_name or city_name.strip().lower() in ("current location", "current_location", "unknown", "none"):
+        resolved_city = raw_weather_data.get("city_name")
+        if resolved_city:
+            city_name = resolved_city
+        else:
+            try:
+                from .services import reverse_geocode
+                geo = reverse_geocode(latitude, longitude)
+                if geo and geo.get("name"):
+                    city_name = geo["name"]
+            except Exception:
+                pass
+
     try:
         weather_record = save_weather_record(city_name, latitude, longitude, raw_weather_data)
         response_data = dict(WeatherRecordSerializer(weather_record).data)
