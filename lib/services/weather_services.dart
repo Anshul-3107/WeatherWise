@@ -50,6 +50,25 @@ class WeatherService {
     }
   }
 
+  Future<GeocodeResult> reverseGeocode(double latitude, double longitude) async {
+    final uri = Uri.parse(
+      '$_baseUrl/reverse-geocode/?lat=$latitude&lon=$longitude',
+    );
+
+    final response = await http.get(uri).timeout(
+      const Duration(seconds: 10),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      return GeocodeResult.fromJson(jsonData);
+    } else if (response.statusCode == 404) {
+      throw Exception('Location not found');
+    } else {
+      throw Exception('Failed to reverse geocode (${response.statusCode})');
+    }
+  }
+
   Future<WeatherModel> fetchCurrentWeather({
     required String cityName,
     required double latitude,

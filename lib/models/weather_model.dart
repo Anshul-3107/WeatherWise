@@ -30,6 +30,9 @@ class WeatherModel {
   final bool isDay;
   final DateTime sunrise;
   final DateTime sunset;
+  final DateTime? moonrise;
+  final DateTime? moonset;
+  final String? moonPhaseLabel;
   final List<WeatherAlert> alerts;
 
   WeatherModel({
@@ -44,6 +47,9 @@ class WeatherModel {
     required this.isDay,
     required this.sunrise,
     required this.sunset,
+    this.moonrise,
+    this.moonset,
+    this.moonPhaseLabel,
     required this.alerts,
   });
 
@@ -62,6 +68,9 @@ class WeatherModel {
       isDay: json['is_day'] as bool,
       sunrise: DateTime.parse(json['sunrise'] as String),
       sunset: DateTime.parse(json['sunset'] as String),
+      moonrise: json['moonrise'] != null ? DateTime.parse(json['moonrise'] as String) : null,
+      moonset: json['moonset'] != null ? DateTime.parse(json['moonset'] as String) : null,
+      moonPhaseLabel: json['moon_phase_label'] as String?,
       alerts: alertsJson
           .map((item) => WeatherAlert.fromJson(item as Map<String, dynamic>))
           .toList(),

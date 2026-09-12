@@ -8,6 +8,7 @@ from .services import (
     fetch_air_quality_from_open_meteo,
     save_air_quality_record,
     generate_alerts_from_weather,
+    get_astronomy_data,
 )
 from .serializers import WeatherRecordSerializer, AirQualityRecordSerializer
 from .ml_service import predict_next_24h
@@ -42,6 +43,12 @@ def get_current_weather(request):
             {"error": "Failed to fetch weather data. Please try again."},
             status=status.HTTP_502_BAD_GATEWAY,
         )
+
+    try:
+        astro_data = get_astronomy_data(latitude, longitude)
+        raw_weather_data.update(astro_data)
+    except Exception:
+        pass
 
     try:
         raw_aqi_data = fetch_air_quality_from_open_meteo(latitude, longitude)
@@ -81,6 +88,43 @@ def search_city(request):
     except Exception:
         return Response(
             {"error": "Failed to search city. Please try again."},
+            status=status.HTTP_502_BAD_GATEWAY,
+        )
+
+    return Response(location, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def reverse_geocode_view(request):
+    latitude = request.query_params.get('lat')
+    longitude = request.query_params.get('lon')
+
+    if not latitude or not longitude:
+        return Response(
+            {"error": "lat and lon query parameters are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        latitude = float(latitude)
+        longitude = float(longitude)
+    except ValueError:
+        return Response(
+            {"error": "lat and lon must be valid numbers."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        from .services import reverse_geocode
+        location = reverse_geocode(latitude, longitude)
+    except ValueError:
+        return Response(
+            {"error": "No location found for coordinates."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    except Exception:
+        return Response(
+            {"error": "Failed to reverse geocode. Please try again."},
             status=status.HTTP_502_BAD_GATEWAY,
         )
 

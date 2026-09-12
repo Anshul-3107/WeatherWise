@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Astronomy section — no outer card chrome, renders inline
+/// inside the detail sheet with onSurface colors.
 class AstronomyCard extends StatelessWidget {
   final String sunrise;
   final String sunset;
@@ -18,60 +20,48 @@ class AstronomyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.brightness_4,
-                size: 24,
-                color: theme.colorScheme.onSurfaceVariant,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.brightness_4,
+              size: 22,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Astronomy',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
               ),
-              const SizedBox(width: 12),
-              Text(
-                'Astronomy',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _AstronomyRow(
-            icon: Icons.wb_sunny_outlined,
-            label: 'Sunrise',
-            value: sunrise,
-            theme: theme,
-          ),
-          _AstronomyRow(
-            icon: Icons.wb_twilight,
-            label: 'Sunset',
-            value: sunset,
-            theme: theme,
-          ),
-          _AstronomyRow(
-            icon: Icons.nightlight_outlined,
-            label: 'Moonrise',
-            value: moonrise,
-            theme: theme,
-          ),
-          _AstronomyRow(
-            icon: Icons.nights_stay_outlined,
-            label: 'Moonset',
-            value: moonset,
-            theme: theme,
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _AstronomyRow(
+          icon: Icons.wb_sunny_outlined,
+          label: 'Sunrise',
+          value: sunrise,
+        ),
+        _AstronomyRow(
+          icon: Icons.wb_twilight,
+          label: 'Sunset',
+          value: sunset,
+        ),
+        _AstronomyRow(
+          icon: Icons.nightlight_outlined,
+          label: 'Moonrise',
+          value: moonrise,
+        ),
+        _AstronomyRow(
+          icon: Icons.nights_stay_outlined,
+          label: 'Moonset',
+          value: moonset,
+        ),
+      ],
     );
   }
 }
@@ -80,17 +70,17 @@ class _AstronomyRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  final ThemeData theme;
 
   const _AstronomyRow({
     required this.icon,
     required this.label,
     required this.value,
-    required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -112,7 +102,7 @@ class _AstronomyRow extends StatelessWidget {
             value,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurfaceVariant,
+              color: theme.colorScheme.onSurface,
             ),
           ),
         ],

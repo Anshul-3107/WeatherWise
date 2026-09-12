@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>WeatherWise needs your location to provide local weather forecasts.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>WeatherWise needs your location to provide local weather forecasts.</string>
 </dict>
 </plist>

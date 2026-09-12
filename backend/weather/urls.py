@@ -7,4 +7,5 @@ urlpatterns = [
     path('air-quality/', views.get_air_quality, name='air-quality'),
     path('predict/', views.get_prediction, name='weather-prediction'),
     path('advice/', views.get_advice, name='personalized-advice'),
+    path('reverse-geocode/', views.reverse_geocode_view, name='reverse-geocode'),
 ]

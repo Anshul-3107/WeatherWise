@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Stripped-down weather card for the hero section — renders directly
+/// on the sky gradient with no container/card background.
 class WeatherCard extends StatelessWidget {
   final String temperature;
   final String condition;
@@ -18,93 +20,76 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 48,
-            color: theme.colorScheme.onPrimaryContainer,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            temperature,
-            style: theme.textTheme.displaySmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
-          ),
-          Text(
-            condition,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _WeatherStat(
-                icon: Icons.water_drop,
-                value: humidity,
-                label: 'Humidity',
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          size: 64,
+          color: Colors.white,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          temperature,
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                fontSize: 76,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
               ),
-              _WeatherStat(
-                icon: Icons.air,
-                value: windSpeed,
-                label: 'Wind',
+        ),
+        Text(
+          condition,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontWeight: FontWeight.w500,
               ),
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _HeroStat(
+              icon: Icons.water_drop,
+              value: humidity,
+            ),
+            const SizedBox(width: 32),
+            _HeroStat(
+              icon: Icons.air,
+              value: windSpeed,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
 
-class _WeatherStat extends StatelessWidget {
+class _HeroStat extends StatelessWidget {
   final IconData icon;
   final String value;
-  final String label;
 
-  const _WeatherStat({
+  const _HeroStat({
     required this.icon,
     required this.value,
-    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           icon,
-          size: 20,
-          color: theme.colorScheme.onPrimaryContainer,
+          size: 18,
+          color: Colors.white70,
         ),
-        const SizedBox(height: 4),
+        const SizedBox(width: 6),
         Text(
           value,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onPrimaryContainer,
-          ),
-        ),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withValues(alpha: 0.85),
+                fontWeight: FontWeight.w500,
+              ),
         ),
       ],
     );

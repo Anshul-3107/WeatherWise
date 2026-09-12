@@ -19,6 +19,7 @@ class WeatherRecord(models.Model):
 
     moonrise = models.DateTimeField(null=True, blank=True)
     moonset = models.DateTimeField(null=True, blank=True)
+    moon_phase = models.FloatField(null=True, blank=True, help_text="Moon phase (0-27.99)")
 
     fetched_at = models.DateTimeField(auto_now_add=True)
 

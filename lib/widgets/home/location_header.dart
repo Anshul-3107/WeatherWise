@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Slim top-bar header — city name with location pin, rendered
+/// directly on the gradient (white text, no card background).
 class LocationHeader extends StatelessWidget {
   final String cityName;
   final String greeting;
@@ -12,29 +14,16 @@ class LocationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Row(
-          children: [
-            Icon(Icons.location_on, size: 20, color: theme.colorScheme.primary),
-            const SizedBox(width: 4),
-            Text(
-              cityName,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
+        const Icon(Icons.location_on, size: 18, color: Colors.white70),
+        const SizedBox(width: 4),
         Text(
-          greeting,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          cityName,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
         ),
       ],
     );
